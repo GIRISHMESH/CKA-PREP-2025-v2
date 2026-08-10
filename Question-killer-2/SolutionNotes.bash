@@ -3,36 +3,25 @@
 # MinIO Operator, CRD Config, Helm Install
 # ============================================================
 
-
 # ============================================================
 # TASK 1
 # Create Namespace
 # ============================================================
-
 kubectl create namespace minio
-
-
 # ============================================================
 # TASK 2
 # Install MinIO Operator using Helm
 # ============================================================
 
 helm repo list
-
 helm search repo minio/operator
-
 helm -n minio install minio-operator minio/operator
 
-
 # Verify Helm release
-
 helm -n minio list
 
-
 # Verify Operator pods
-
 kubectl -n minio get pods
-
 
 # ============================================================
 # TASK 3
@@ -40,7 +29,6 @@ kubectl -n minio get pods
 # ============================================================
 
 vim /opt/course/2/minio-tenant.yaml
-
 
 # Change:
 #
@@ -50,18 +38,15 @@ vim /opt/course/2/minio-tenant.yaml
 #
 # enableSFTP: true
 
-
 # You can verify the setting with:
 
 grep -n -A5 -B2 "features:" /opt/course/2/minio-tenant.yaml
-
 
 # Expected:
 
 # features:
 #   bucketDNS: false
 #   enableSFTP: true
-
 
 # ============================================================
 # TASK 4
@@ -80,7 +65,6 @@ kubectl get crd | grep minio
 kubectl -n minio get tenant
 
 kubectl -n minio get tenant tenant -o yaml
-
 
 # Verify enableSFTP:
 
