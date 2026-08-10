@@ -1,39 +1,14 @@
 #!/bin/bash
 set -euo pipefail
 
-echo "🔹 Creating namespace: minio"
-
-kubectl create namespace minio \
-  --dry-run=client \
-  -o yaml | kubectl apply -f -
-
-echo "🔹 Adding MinIO Operator Helm repository..."
+echo "🔹 Preparing MinIO Helm repository..."
 
 helm repo add minio-operator https://operator.min.io/ \
   --force-update
 
-echo "🔹 Updating Helm repositories..."
-
 helm repo update
 
-echo "🔹 Searching MinIO Operator chart..."
-
-helm search repo minio-operator
-
-echo "🔹 Installing MinIO Operator..."
-
-helm upgrade --install minio-operator \
-  minio-operator/operator \
-  --namespace minio \
-  --create-namespace
-
-echo "🔹 Waiting for MinIO Operator..."
-
-kubectl -n minio rollout status deployment \
-  -l app.kubernetes.io/name=operator \
-  --timeout=120s || true
-
-echo "🔹 Creating Tenant YAML..."
+echo "🔹 Preparing Tenant YAML..."
 
 mkdir -p /opt/course/2
 
@@ -74,20 +49,20 @@ spec:
 EOF
 
 echo
-echo "✅ MinIO Operator lab setup complete."
+echo "=========================================="
+echo "✅ Lab setup complete"
+echo "=========================================="
 
 echo
-echo "=== Helm Repository ==="
-helm repo list
+echo "📁 Tenant YAML:"
+echo "/opt/course/2/minio-tenant.yaml"
 
 echo
-echo "=== Helm Release ==="
-helm -n minio list
-
+echo "⚠️ Candidate must now complete the question."
 echo
-echo "=== MinIO CRDs ==="
-kubectl get crd | grep minio || true
-
-echo
-echo "=== Tenant YAML ==="
-ls -l /opt/course/2/minio-tenant.yaml
+echo "Starting state:"
+echo "- Namespace minio: NOT created"
+echo "- MinIO Operator: NOT installed"
+echo "- MinIO CRDs: NOT installed"
+echo "- Tenant YAML: prepared"
+echo "- enableSFTP: false"
