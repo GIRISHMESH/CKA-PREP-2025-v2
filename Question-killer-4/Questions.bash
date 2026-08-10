@@ -1,62 +1,165 @@
 #!/bin/bash
 
-# Question 9+10 — ServiceAccount, RBAC and Kubernetes API
+cat <<'EOF'
 
-# Task
-#
-# You are working in the Kubernetes cluster.
-#
-# Namespace:
-# project-hamster
-#
-# A ServiceAccount named:
-# processor
-#
-# is available for an application Pod.
-#
-# 1. Create/configure RBAC so that the ServiceAccount processor
-#    can ONLY create:
-#
-#    - Secrets
-#    - ConfigMaps
-#
-#    in the project-hamster namespace.
-#
-# 2. Create/use a Pod named:
-#
-#    api-contact
-#
-#    using image:
-#
-#    nginx:1-alpine
-#
-#    The Pod must use the ServiceAccount:
-#
-#    processor
-#
-# 3. From inside the Pod, use the ServiceAccount token to
-#    authenticate to the Kubernetes API.
-#
-# 4. Query all Secrets from the project-hamster namespace using:
-#
-#    https://kubernetes.default/api/v1/namespaces/project-hamster/secrets
-#
-# 5. Save the complete API response inside the Pod as:
-#
-#    result.json
-#
-# 6. Copy the result from the Pod to:
-#
-#    /opt/course/9-10/result.json
-#
-# 7. Verify that the processor ServiceAccount:
-#
-#    - can create Secrets
-#    - can create ConfigMaps
-#    - cannot create Pods
-#    - cannot delete Secrets
-#    - cannot get ConfigMaps
-#
-# The ServiceAccount token is mounted inside the Pod at:
-#
-# /var/run/secrets/kubernetes.io/serviceaccount/token
+======================================================================
+Combined CKA Question 9 + 10
+ServiceAccount, RBAC & Kubernetes API
+======================================================================
+
+Solve this question on:
+
+    ssh cka9412
+
+
+You are working in a Kubernetes cluster.
+
+Starting from scratch, configure access for a ServiceAccount and use
+it to access the Kubernetes API from inside a Pod.
+
+
+TASK 1 — CREATE NAMESPACE
+----------------------------------------------------------------------
+
+Create a Namespace named:
+
+    project-hamster
+
+
+TASK 2 — CREATE SERVICEACCOUNT
+----------------------------------------------------------------------
+
+Create a ServiceAccount named:
+
+    processor
+
+in the project-hamster Namespace.
+
+
+TASK 3 — CREATE ROLE
+----------------------------------------------------------------------
+
+Create a Role named:
+
+    processor
+
+in the project-hamster Namespace.
+
+The Role must allow the processor ServiceAccount to ONLY create:
+
+    - Secrets
+    - ConfigMaps
+
+It must not grant any other permissions.
+
+
+TASK 4 — CREATE ROLEBINDING
+----------------------------------------------------------------------
+
+Create a RoleBinding named:
+
+    processor
+
+in the project-hamster Namespace.
+
+Bind the Role:
+
+    processor
+
+to the ServiceAccount:
+
+    processor
+
+
+TASK 5 — CREATE POD
+----------------------------------------------------------------------
+
+Create a Pod named:
+
+    api-contact
+
+in the project-hamster Namespace using:
+
+    nginx:1-alpine
+
+The Pod must use the ServiceAccount:
+
+    processor
+
+
+TASK 6 — ACCESS KUBERNETES API
+----------------------------------------------------------------------
+
+Exec into the api-contact Pod.
+
+Inside the Pod, use the ServiceAccount token located at:
+
+    /var/run/secrets/kubernetes.io/serviceaccount/token
+
+to authenticate with the Kubernetes API.
+
+
+TASK 7 — QUERY ALL SECRETS
+----------------------------------------------------------------------
+
+Query ALL Secrets in the project-hamster Namespace using:
+
+    https://kubernetes.default/api/v1/namespaces/project-hamster/secrets
+
+The API request MUST be authenticated using the processor
+ServiceAccount token.
+
+
+TASK 8 — SAVE API RESPONSE
+----------------------------------------------------------------------
+
+Save the COMPLETE API response inside the Pod as:
+
+    result.json
+
+
+TASK 9 — COPY RESULT
+----------------------------------------------------------------------
+
+Copy the result.json file from the Pod to:
+
+    /opt/course/9-10/result.json
+
+
+TASK 10 — VERIFY RBAC
+----------------------------------------------------------------------
+
+Verify the RBAC permissions of the processor ServiceAccount.
+
+The results must be:
+
+    Action                    Expected
+    ------------------------------------------------
+    Create Secret             yes
+    Create ConfigMap          yes
+    Create Pod                no
+    Delete Secret             no
+    Get ConfigMap             no
+
+
+IMPORTANT
+----------------------------------------------------------------------
+
+- Do NOT assume the Namespace already exists.
+- Do NOT assume the ServiceAccount already exists.
+- The RBAC configuration must be created from scratch.
+- The API request MUST use the ServiceAccount token for authentication.
+- The final API response MUST exist at:
+
+    /opt/course/9-10/result.json
+
+
+ServiceAccount token location inside the Pod:
+
+    /var/run/secrets/kubernetes.io/serviceaccount/token
+
+======================================================================
+END OF QUESTION
+======================================================================
+
+EOF
