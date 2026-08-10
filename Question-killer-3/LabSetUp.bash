@@ -5,10 +5,6 @@ echo "🔹 Preparing Question 5 - Kustomize HPA lab..."
 
 BASE="/opt/course/5/api-gateway"
 
-# ------------------------------------------------------------
-# Clean previous lab if it exists
-# ------------------------------------------------------------
-
 rm -rf "$BASE"
 
 mkdir -p "$BASE/base"
@@ -16,7 +12,7 @@ mkdir -p "$BASE/staging"
 mkdir -p "$BASE/prod"
 
 # ------------------------------------------------------------
-# Create namespaces
+# Namespaces
 # ------------------------------------------------------------
 
 echo "🔹 Creating namespaces..."
@@ -36,7 +32,6 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: api-gateway
-  namespace: NAMESPACE_REPLACE
 EOF
 
 # ------------------------------------------------------------
@@ -48,7 +43,6 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: horizontal-scaling-config
-  namespace: NAMESPACE_REPLACE
 data:
   horizontal-scaling: "70"
 EOF
@@ -62,7 +56,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: api-gateway
-  namespace: NAMESPACE_REPLACE
 spec:
   replicas: 1
   selector:
@@ -101,7 +94,7 @@ resources:
 EOF
 
 # ------------------------------------------------------------
-# STAGING patch
+# STAGING - Deployment patch
 # ------------------------------------------------------------
 
 cat > "$BASE/staging/api-gateway.yaml" <<'EOF'
@@ -109,12 +102,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: api-gateway
-  labels:
-    env: staging
+spec:
+  replicas: 1
 EOF
 
 # ------------------------------------------------------------
-# STAGING patch for old ConfigMap
+# STAGING - ConfigMap patch
 # ------------------------------------------------------------
 
 cat > "$BASE/staging/horizontal-scaling-config.yaml" <<'EOF'
@@ -127,12 +120,14 @@ data:
 EOF
 
 # ------------------------------------------------------------
-# STAGING Kustomization
+# STAGING - Kustomization
 # ------------------------------------------------------------
 
 cat > "$BASE/staging/kustomization.yaml" <<'EOF'
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
+namespace: api-gateway-staging
 
 resources:
   - ../base
@@ -140,18 +135,10 @@ resources:
 patches:
   - path: api-gateway.yaml
   - path: horizontal-scaling-config.yaml
-
-transformers:
-  - |
-    apiVersion: builtin
-    kind: NamespaceTransformer
-    metadata:
-      name: notImportantHere
-    namespace: api-gateway-staging
 EOF
 
 # ------------------------------------------------------------
-# PROD patch
+# PROD - Deployment patch
 # ------------------------------------------------------------
 
 cat > "$BASE/prod/api-gateway.yaml" <<'EOF'
@@ -159,12 +146,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: api-gateway
-  labels:
-    env: prod
+spec:
+  replicas: 1
 EOF
 
 # ------------------------------------------------------------
-# PROD patch for old ConfigMap
+# PROD - ConfigMap patch
 # ------------------------------------------------------------
 
 cat > "$BASE/prod/horizontal-scaling-config.yaml" <<'EOF'
@@ -177,12 +164,14 @@ data:
 EOF
 
 # ------------------------------------------------------------
-# PROD Kustomization
+# PROD - Kustomization
 # ------------------------------------------------------------
 
 cat > "$BASE/prod/kustomization.yaml" <<'EOF'
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
+namespace: api-gateway-prod
 
 resources:
   - ../base
@@ -190,18 +179,10 @@ resources:
 patches:
   - path: api-gateway.yaml
   - path: horizontal-scaling-config.yaml
-
-transformers:
-  - |
-    apiVersion: builtin
-    kind: NamespaceTransformer
-    metadata:
-      name: notImportantHere
-    namespace: api-gateway-prod
 EOF
 
 # ------------------------------------------------------------
-# Deploy INITIAL state
+# Deploy initial state
 # ------------------------------------------------------------
 
 echo "🔹 Deploying initial staging configuration..."
@@ -223,12 +204,12 @@ echo "$BASE"
 
 echo
 echo "Starting state:"
-echo "- Namespaces created"
-echo "- api-gateway Deployment exists"
-echo "- horizontal-scaling-config exists"
-echo "- No HPA exists"
-echo "- Staging ConfigMap scaling value: 60"
-echo "- Production ConfigMap scaling value: 50"
+echo "- Namespace api-gateway-staging: created"
+echo "- Namespace api-gateway-prod: created"
+echo "- api-gateway Deployment: exists"
+echo "- horizontal-scaling-config: exists"
+echo "- HPA: NOT created"
 echo "- Candidate must remove the ConfigMap"
 echo "- Candidate must create the HPA"
-echo "- Candidate must configure prod maxReplicas = 6"
+echo "- Staging maxReplicas: 4"
+echo "- Production maxReplicas: 6"
