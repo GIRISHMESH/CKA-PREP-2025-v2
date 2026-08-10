@@ -24,6 +24,20 @@ spec:
     - servers: 1
       name: pool-0
       volumesPerServer: 0
+      volumeClaimTemplate:
+        apiVersion: v1
+        kind: PersistentVolumeClaim
+        metadata: {}
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Mi
+          storageClassName: standard
+        status: {}
+
+  requestAutoCert: true
 EOF
 
 echo
