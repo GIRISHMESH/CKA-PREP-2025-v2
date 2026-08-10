@@ -1,13 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-echo "🔹 Preparing MinIO Helm repository..."
-
-helm repo add minio-operator https://operator.min.io/ \
-  --force-update
-
-helm repo update
-
 echo "🔹 Preparing Tenant YAML..."
 
 mkdir -p /opt/course/2
@@ -59,6 +52,7 @@ echo "/opt/course/2/minio-tenant.yaml"
 
 echo
 echo "⚠️ Candidate must now complete the question."
+
 echo
 echo "Starting state:"
 echo "- Namespace minio: NOT created"
