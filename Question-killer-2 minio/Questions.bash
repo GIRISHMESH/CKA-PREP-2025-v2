@@ -9,9 +9,7 @@
 #    Install the Helm chart into the Namespace: minio
 #    The Helm release must be called:minio-operator
 #
-# 3. A Tenant Custom Resource definition is available in:
-#
-#    /opt/course/2/minio-tenant.yaml
+# 3. A Tenant Custom Resource definition is available in: /opt/course/2/minio-tenant.yaml
 #    Modify the Tenant resource so that:
 #    spec.features.enableSFTP
 #
