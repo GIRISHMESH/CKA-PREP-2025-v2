@@ -1,9 +1,8 @@
 ### Question 5 — Kustomize HPA Autoscaler
-###
+###Previously, the application api-gateway used an external autoscaler. Replace it with a Kubernetes HorizontalPodAutoscaler (HPA).
 ### Solve this task on the current Kubernetes cluster.
 ###
 ### The application "api-gateway" is deployed in the following environments:
-###
 ###   api-gateway-staging
 ###   api-gateway-prod
 ###
