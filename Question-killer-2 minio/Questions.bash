@@ -11,9 +11,7 @@
 #
 # 3. A Tenant Custom Resource definition is available in: /opt/course/2/minio-tenant.yaml
 #    Modify the Tenant resource so that:
-#    spec.features.enableSFTP
-#
-#    is set to: true
+#    spec.features.enableSFTP  is set to: true
 #
 # 4. Create/apply the Tenant resource from:
 #
