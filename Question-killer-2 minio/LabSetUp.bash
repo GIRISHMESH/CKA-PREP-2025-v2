@@ -16,8 +16,6 @@ metadata:
 spec:
   features:
     bucketDNS: false
-    enableSFTP: false
-
   image: quay.io/minio/minio:latest
 
   pools:
