@@ -22,9 +22,3 @@
 #    /opt/course/2/minio-tenant.yaml
 # Do not create a different Tenant YAML file.
 # Verify that the Tenant resource was created successfully.
-# Useful commands may include:
-# kubectl get crd
-# kubectl describe crd tenant
-# helm search repo
-# helm list
-# kubectl get tenant
